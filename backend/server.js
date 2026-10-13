@@ -10,7 +10,7 @@ const DATA_FILE = path.join(__dirname, 'submissions.json');
 app.use(express.json());
 app.use(cors());
 
-// Helper function to read existing submissions
+// Helper function to read existing submissions from JSON file
 const readSubmissions = () => {
     if (!fs.existsSync(DATA_FILE)) {
         return [];
@@ -31,7 +31,6 @@ app.post('/api/submit', (req, res) => {
         submittedAt: new Date().toISOString()
     };
 
-    // Read current submissions, push the new one, and write back to file
     const submissions = readSubmissions();
     submissions.push(newSubmission);
     fs.writeFileSync(DATA_FILE, JSON.stringify(submissions, null, 2));
@@ -45,7 +44,7 @@ app.post('/api/submit', (req, res) => {
     });
 });
 
-// 2. GET endpoint to retrieve all submissions (we'll use this next for a dashboard!)
+// 2. GET endpoint to retrieve all submissions for the dashboard
 app.get('/api/submissions', (req, res) => {
     const submissions = readSubmissions();
     res.status(200).json({
@@ -53,6 +52,22 @@ app.get('/api/submissions', (req, res) => {
         count: submissions.length,
         data: submissions
     });
+});
+
+// 3. DELETE endpoint to remove a submission by ID
+app.delete('/api/submissions/:id', (req, res) => {
+    const id = Number(req.params.id);
+    let submissions = readSubmissions();
+    const filteredSubmissions = submissions.filter(sub => sub.id !== id);
+
+    if (submissions.length === filteredSubmissions.length) {
+        return res.status(404).json({ success: false, message: "Submission not found" });
+    }
+
+    fs.writeFileSync(DATA_FILE, JSON.stringify(filteredSubmissions, null, 2));
+    console.log(`🗑️ Deleted submission with ID: ${id}`);
+
+    res.status(200).json({ success: true, message: "Submission deleted successfully" });
 });
 
 app.listen(PORT, () => {
