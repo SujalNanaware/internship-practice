@@ -1,22 +1,17 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import FormPage from './components/FormPage';
-import SubmissionsList from './components/SubmissionsList';
-import { Container, Box } from '@mui/material';
+import GitHubProfile from './components/GitHubProfile';
 
-export default function App() {
+function App() {
   return (
-    <BrowserRouter>
-      <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh', pb: 6 }}>
-        <Navbar />
-        <Container maxWidth="md">
-          <Routes>
-            <Route path="/" element={<FormPage />} />
-            <Route path="/submissions" element={<SubmissionsList />} />
-          </Routes>
-        </Container>
-      </Box>
-    </BrowserRouter>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f3f4f6', padding: '40px 20px' }}>
+      <h1 style={{ textAlign: 'center', fontSize: '28px', fontWeight: 'bold', marginBottom: '20px', color: '#1f2937' }}>
+        Developer Dashboard
+      </h1>
+      
+      {/* GitHub Profile Component */}
+      <GitHubProfile />
+    </div>
   );
 }
+
+export default App;
